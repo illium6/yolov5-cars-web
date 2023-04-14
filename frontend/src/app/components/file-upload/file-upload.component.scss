@@ -1,0 +1,50 @@
+$font-size-base: 36px;
+
+:host {
+	display: flex;
+	justify-content: center;
+
+	.upload-view {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		justify-content: center;
+	}
+
+	mat-icon {
+		font-size: 128px;
+		height: fit-content;
+		width: fit-content;
+	}
+
+	.file-upload-wrapper {
+		display: flex;
+		width: 50%;
+		height: 100%;
+		border: dashed grey 3px;
+		border-radius: 5px;
+		justify-content: center;
+		align-items: center;
+		margin-top: 5vh;
+		padding: 15vh 0;
+		flex-direction: column;
+		font-size: $font-size-base;
+
+		&.highlight {
+			border-color: goldenrod;
+			background-color: aqua;
+		}
+	}
+
+	.manual-file-choose {
+		display: flex;
+		flex-direction: column;
+		margin-top: 5vh;
+		justify-content: center;
+		font-size: calc($font-size-base / 2);
+	}
+
+	input[type=file] {
+		margin: 0 auto;
+	}
+}

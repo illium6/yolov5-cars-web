@@ -1,0 +1,18 @@
+<div class="upload-view">
+	<div
+		class="file-upload-wrapper"
+		(dragover)="onDragOver($event)"
+		(dragleave)="onDragLeave($event)"
+		(drop)="onDrop($event)"
+	>
+		<ng-container *ngIf="!(loading$ | async)">
+			<mat-icon fontIcon="cloud_download"></mat-icon>
+			Перетащите файл сюда
+			<div class="manual-file-choose">
+				<span>Или выберите файл на устройстве</span>
+				<input type="file" accept="video/*" (change)="onDrop($event)" />
+			</div>
+		</ng-container>
+		<app-preloader *ngIf="loading$ | async"></app-preloader>
+	</div>
+</div>
