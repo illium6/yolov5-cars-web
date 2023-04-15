@@ -1,0 +1,62 @@
+<div class="upload-form-wrapper">
+	<form>
+		<mat-grid-list cols="2" rowHeight="2:1">
+			<mat-grid-tile>
+				<mat-form-field class="video-choice" appearance="fill">
+					<mat-label>Выберите демонстрационное видео или загрузите свое</mat-label>
+					<mat-select [formControl]="form.video">
+						<mat-option
+							*ngFor="let demoVideo of DEMO_VIDEOS"
+							[value]="demoVideo.videoPath"
+						>
+							{{ demoVideo.label }}
+						</mat-option>
+					</mat-select>
+				</mat-form-field>
+			</mat-grid-tile>
+			<mat-grid-tile>
+				<div class="output-type-choice">
+					<p>Выберите тип выходных данных</p>
+					<mat-divider></mat-divider>
+					<mat-radio-group [formControl]="form.outputType">
+						<mat-radio-button *ngFor="let type of OUTPUT_TYPE" [value]="type.type">
+							{{ type.label }}
+						</mat-radio-button>
+					</mat-radio-group>
+				</div>
+			</mat-grid-tile>
+			<mat-grid-tile>
+				<video *ngIf="!(showUploadWindow$ | async) && form.video.value" controls>
+					<source [src]="'assets/' + form.video.value" type="video/webm" />
+				</video>
+				<app-file-upload *ngIf="showUploadWindow$ | async"></app-file-upload>
+			</mat-grid-tile>
+			<mat-grid-tile>
+				<div class="checkbox-tile">
+					<p>Выберите классы, для которых применить распознавание</p>
+					<mat-divider></mat-divider>
+
+					<mat-checkbox
+						class="main-checkbox"
+						(change)="setClassesFullList($event)"
+						[indeterminate]="checkboxIndeterminate$ | async"
+						[checked]="form.displayedClasses.value.length === DISPLAYED_CLASS.length"
+					>
+						Выбрать все
+					</mat-checkbox>
+
+					<span class="classes-checkbox">
+						<mat-checkbox
+							*ngFor="let displayedClass of DISPLAYED_CLASS"
+							(change)="setValueToForm($event.checked, displayedClass.class)"
+							[checked]="form.displayedClasses.value.includes(displayedClass.class)"
+						>
+							{{ displayedClass.label }}
+						</mat-checkbox>
+					</span>
+				</div>
+			</mat-grid-tile>
+		</mat-grid-list>
+	</form>
+	<button mat-raised-button color="primary" (click)="sendData()">Отправить</button>
+</div>

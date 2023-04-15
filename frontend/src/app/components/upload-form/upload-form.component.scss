@@ -1,0 +1,61 @@
+:host {
+	padding: 16px;
+	width: 100%;
+	display: flex;
+	justify-content: center;
+
+	mat-radio-group {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.upload-form-wrapper {
+		width: 70vw;
+		display: flex;
+		flex-direction: column;
+
+		& button[mat-raised-button] {
+			margin-top: 32px;
+			align-self: center;
+			padding: 32px 64px;
+			font-size: large;
+		}
+	}
+
+	app-file-upload {
+		align-self: stretch;
+		width: 100%;
+	}
+
+	.video-choice {
+		width: 100%;
+	}
+
+	.output-type-choice {
+		p {
+			font-size: medium;
+		}
+
+		mat-divider {
+			margin-bottom: 8px;
+		}
+	}
+
+	.classes-checkbox {
+		display: flex;
+		flex-flow: column wrap;
+		padding-left: 32px;
+		height: 70%;
+	}
+
+	.checkbox-tile {
+		height: 100%;
+	}
+
+	video {
+		max-height: 100%;
+		max-width: 100%;
+		width: auto;
+		height: auto;
+	}
+}

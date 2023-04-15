@@ -19,14 +19,12 @@ $font-size-base: 36px;
 
 	.file-upload-wrapper {
 		display: flex;
-		width: 50%;
-		height: 100%;
+		width: 100%;
 		border: dashed grey 3px;
 		border-radius: 5px;
 		justify-content: center;
 		align-items: center;
-		margin-top: 5vh;
-		padding: 15vh 0;
+		padding: 5vh 0;
 		flex-direction: column;
 		font-size: $font-size-base;
 
