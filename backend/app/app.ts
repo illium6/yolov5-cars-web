@@ -9,7 +9,8 @@ import cors from 'cors';
 import * as path from 'path';
 import { videoUploadRouter } from './post/video-upload.js';
 import { rootPath } from '../utils/paths.js';
-import {createDeletionJob} from '../utils/cron-tasks.js';
+import { createDeletionJob } from '../utils/cron-tasks.js';
+import { videoDownloadRouter } from './get/download-file.js';
 
 createDeletionJob();
 
@@ -46,11 +47,13 @@ app.use(
 app.use(express.static(path.join(rootPath, 'uploads')));
 
 app.use('/api/v1', videoUploadRouter);
-
-app.get('/', (req, res) => {
-	console.log(req.cookies);
-
-	res.send('Hello World!');
+app.use('/api/v1', videoDownloadRouter);
+app.use((req, res) => {
+	if (!res.headersSent) {
+		setTimeout(() => {
+			res.status(500).json({ success: false, message: 'Unknown error occurred' });
+		}, 5000);
+	}
 });
 
 app.listen(port, () => {

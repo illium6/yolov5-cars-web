@@ -13,7 +13,7 @@ videoUploadRouter.post('/upload-user-video', async (req, res) => {
 	const userVideoUpload = req.files['user_video'];
 	const video = Array.isArray(userVideoUpload) ? userVideoUpload[0] : userVideoUpload;
 
-	await video.mv(path.join(rootPath, 'uploads', req.session.id, video.name));
+	await video.mv(path.join(rootPath, 'uploads', 'input', req.session.id, video.name));
 
 	res.status(200).json({ success: true });
 });
