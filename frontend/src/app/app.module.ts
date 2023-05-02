@@ -6,10 +6,9 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FileUploadComponent } from './components/file-upload/file-upload.component';
 import { MatIconModule } from '@angular/material/icon';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { PreloaderComponent } from './components/preloader/preloader.component';
-import { TestUploadInterceptor } from './interceptors/test-upload.interceptor';
 import { ReactiveFormsModule } from '@angular/forms';
 import { UploadFormComponent } from './components/upload-form/upload-form.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -37,13 +36,6 @@ import { MatButtonModule } from '@angular/material/button';
 		MatGridListModule,
 		MatDividerModule,
 		MatButtonModule,
-	],
-	providers: [
-		{
-			provide: HTTP_INTERCEPTORS,
-			useClass: TestUploadInterceptor,
-			multi: true,
-		},
 	],
 	bootstrap: [AppComponent],
 })

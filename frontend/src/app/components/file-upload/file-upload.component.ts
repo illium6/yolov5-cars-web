@@ -1,22 +1,18 @@
-import { ChangeDetectionStrategy, Component, Renderer2 } from '@angular/core';
-import { VideoUploadService } from '../../services/video-upload.service';
-import { first, Observable } from 'rxjs';
+import { ChangeDetectionStrategy, Component, Input, Renderer2 } from '@angular/core';
 import { UnsafeValue } from '../../interfaces/unsafe-value';
+import { FormControl } from '@angular/forms';
 
 @Component({
 	selector: 'app-file-upload',
 	templateUrl: './file-upload.component.html',
 	styleUrls: ['./file-upload.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
-	providers: [VideoUploadService],
 })
 export class FileUploadComponent {
-	public loading$: Observable<boolean> = this.uploadService.loading$;
+	@Input()
+	public form!: FormControl;
 
-	public constructor(
-		private render: Renderer2,
-		private uploadService: VideoUploadService
-	) {}
+	public constructor(private render: Renderer2) {}
 
 	public onDragOver(event: Event): void {
 		event.preventDefault();
@@ -51,6 +47,6 @@ export class FileUploadComponent {
 			return;
 		}
 
-		this.uploadService.uploadFile(files[0].name).pipe(first()).subscribe();
+		this.form.setValue(files[0]);
 	}
 }

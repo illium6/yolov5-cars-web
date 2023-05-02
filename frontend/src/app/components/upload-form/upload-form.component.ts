@@ -1,14 +1,16 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { UploadForm } from '../../models/upload-form';
 import { DEMO_VIDEOS, DISPLAYED_CLASS, OUTPUT_TYPE } from '../../models/form-fields-values';
-import { BehaviorSubject, Observable, Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, first, Observable, Subject, takeUntil } from 'rxjs';
 import { MatCheckboxChange } from '@angular/material/checkbox';
+import { VideoUploadService } from '../../services/video-upload.service';
 
 @Component({
 	selector: 'app-upload-form',
 	templateUrl: './upload-form.component.html',
 	styleUrls: ['./upload-form.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
+	providers: [VideoUploadService],
 })
 export class UploadFormComponent implements OnInit, OnDestroy {
 	public form: UploadForm = new UploadForm();
@@ -22,7 +24,7 @@ export class UploadFormComponent implements OnInit, OnDestroy {
 
 	private destroy$: Subject<void> = new Subject<void>();
 
-	public constructor() {
+	public constructor(private uploadService: VideoUploadService) {
 		this._showUploadWindow$ = new BehaviorSubject<boolean>(false);
 		this.showUploadWindow$ = this._showUploadWindow$.asObservable();
 
@@ -31,7 +33,7 @@ export class UploadFormComponent implements OnInit, OnDestroy {
 	}
 
 	public ngOnInit() {
-		this.form.video.valueChanges
+		this.form.demoVideo.valueChanges
 			.pipe(takeUntil(this.destroy$))
 			.subscribe((videoPath: string) =>
 				this._showUploadWindow$.next(videoPath === 'downloaded'),
@@ -78,7 +80,7 @@ export class UploadFormComponent implements OnInit, OnDestroy {
 		const isValid = this.form.validateForm();
 
 		if (isValid) {
-			console.log('Она сказала заебись');
+			this.uploadService.uploadUserInput(this.form).pipe(first()).subscribe();
 		}
 	}
 
