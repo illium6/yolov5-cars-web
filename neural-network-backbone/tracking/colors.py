@@ -1,9 +1,6 @@
 from supervision.draw.color import Color
 
-# white
-BASE_COLOR_HEX = "#FFFFFF"
-BASE_COLOR = Color.from_hex(BASE_COLOR_HEX)
 
-COLORS = [
-    BASE_COLOR,
-]
+# white
+def convert_to_hex_color(color):
+    return Color.from_hex(color)
