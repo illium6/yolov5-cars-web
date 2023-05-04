@@ -1,5 +1,4 @@
 import argparse
-from dataclasses import dataclass
 
 from bytetracker import BYTETracker
 from roboflow import Roboflow
@@ -12,27 +11,21 @@ from tracking.colors import convert_to_hex_color
 from tracking.utils import *
 
 
-@dataclass(frozen=True)
-class BYTETrackerArgs:
-    track_thresh: float = 0.25
-    track_buffer: int = 30
-    match_thresh: float = 0.8
-    aspect_ratio_thresh: float = 3.0
-    min_box_area: float = 1.0
-    mot20: bool = False
-
-
 def main(args):
     SOURCE_VIDEO_PATH = args.input
 
     rf = Roboflow(api_key="bdAvwORYXz3sYBNRPlIG")
     project = rf.workspace().project("full-dataset-4ekr5")
-    model = project.version(4).model
-    classes = project.classes
+    # model = project.version(5).model
+    model = torch.hub.load('ultralytics/yolov5', 'custom', path='./weights/best.pt')
+    model.conf = 0.4
+    # classes = project.classes
+    classes = model.names
 
     project_colors = list(map(convert_to_hex_color, project.colors.values()))
 
-    CLASS_NAMES = list(classes.keys())
+    # CLASS_NAMES = list(classes.keys())
+    CLASS_NAMES = list(classes.values())
 
     # create BYTETracker instance
     byte_tracker = BYTETracker(track_thresh=0.3, track_buffer=30)
@@ -54,9 +47,12 @@ def main(args):
         for frame in generator:
             count += 1
             print(f'{count}/{video_info.total_frames}')
+
             # model prediction on single frame and conversion to supervision Detections
-            results = dict(model.predict(frame).json())
-            detections = Detections.from_roboflow(results, CLASS_NAMES)
+            # results = model.predict(frame).json()
+            results = model(frame)
+            # detections = Detections.from_roboflow(results, CLASS_NAMES)
+            detections = Detections.from_yolov5(results)
 
             # filtering out detections with unwanted classes
             mask = np.array([class_id in CLASS_ID for class_id in detections.class_id], dtype=bool)
@@ -71,16 +67,16 @@ def main(args):
             mask = np.array([tracker_id is not None for tracker_id in detections.tracker_id], dtype=bool)
             filter_detections(detections, mask, inplace=True)
 
-            # format custom labels
-            labels = [
-                f"#{tracker_id} {CLASS_NAMES[class_id]} {confidence:0.2f}"
-                for _, confidence, class_id, tracker_id
-                in detections
-            ]
-
-            # annotate and display frame
-            frame = box_annotator.annotate(scene=frame, detections=detections, labels=labels)
-            sink.write_frame(frame)
+            if args.output_type in ['video', 'all']:
+                # format custom labels
+                labels = [
+                    f"#{tracker_id} {CLASS_NAMES[class_id]} {confidence:0.2f}"
+                    for _, confidence, class_id, tracker_id
+                    in detections
+                ]
+                # annotate and display frame
+                frame = box_annotator.annotate(scene=frame, detections=detections, labels=labels)
+                sink.write_frame(frame)
 
 
 if __name__ == '__main__':
@@ -88,6 +84,8 @@ if __name__ == '__main__':
     parser.add_argument('--input', required=True, dest='input', type=str, help='Video to recognize')
     parser.add_argument('--output', required=True, dest='output', type=str, help='Path to write output video')
     parser.add_argument('--filter-classes', nargs='*', dest='filter', help='Classes to filter out from output')
+    parser.add_argument('--output-type', required=True, dest='output_type', choices=['json', 'video', 'all'],
+                        help='Output can be video or json with results or both')
 
     args = parser.parse_args()
 
