@@ -11,7 +11,6 @@ import { videoUploadRouter } from './post/video-upload.js';
 import { rootPath } from '../utils/paths.js';
 import { createDeletionJob } from '../utils/cron-tasks.js';
 import { videoDownloadRouter } from './get/download-file.js';
-import { outputConfigurationRouter } from './post/output-configuration.js';
 
 createDeletionJob();
 
@@ -49,7 +48,7 @@ app.use(express.static(path.join(rootPath, 'uploads')));
 
 app.use('/api/v1', videoUploadRouter);
 app.use('/api/v1', videoDownloadRouter);
-app.use('/api/v1', outputConfigurationRouter);
+// app.use('/api/v1', startDetectionRouter);
 app.use((req, res) => {
 	if (!res.headersSent) {
 		setTimeout(() => {

@@ -1,6 +1,7 @@
 import argparse
 import json
 import os
+import sys
 
 from bytetracker import BYTETracker
 from roboflow import Roboflow
@@ -19,7 +20,7 @@ def main(args):
     rf = Roboflow(api_key="bdAvwORYXz3sYBNRPlIG")
     project = rf.workspace().project("full-dataset-4ekr5")
     # model = project.version(5).model
-    model = torch.hub.load('ultralytics/yolov5', 'custom', path='./weights/best.pt')
+    model = torch.hub.load('ultralytics/yolov5', 'custom', path=args.weights)
     model.conf = 0.4
     # classes = project.classes
     classes = model.names
@@ -42,6 +43,8 @@ def main(args):
 
     DEST_VIDEO_PATH = os.path.join(args.output, 'output.mp4')
 
+    os.makedirs(args.output, exist_ok=True)
+
     json_output = {
         "predictions": [],
         "statistics": {
@@ -59,6 +62,7 @@ def main(args):
         for frame in generator:
             count += 1
             print(f'{count}/{video_info.total_frames}')
+            sys.stdout.flush()
 
             # model prediction on single frame and conversion to supervision Detections
             # results = model.predict(frame).json()
@@ -110,6 +114,7 @@ if __name__ == '__main__':
     parser.add_argument('--filter-classes', nargs='*', dest='filter', help='Classes to filter out from output')
     parser.add_argument('--output-type', required=True, dest='output_type', choices=['json', 'video', 'all'],
                         help='Output can be video or json with results or both')
+    parser.add_argument('--weights', required=True, dest='weights', default='./weights/best.pt', help='YOLOv5 weights')
 
     args = parser.parse_args()
 
