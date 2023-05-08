@@ -1,0 +1,16 @@
+version: "3"
+services:
+  backend:
+    build:
+      context: ./
+      dockerfile: ./backend/Dockerfile
+    environment:
+      - SESSION_SECRET=YetAnotherProject
+      - UUID_NAMESPACE=ca88cfb7-e771-4da8-817b-45b12a370c95
+    container_name: app-backend
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [ gpu ]

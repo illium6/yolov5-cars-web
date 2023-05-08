@@ -2,12 +2,12 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "../dist/backend/app/app.js",
+  "main": "./dist/backend/app/app.js",
   "type": "module",
   "scripts": {
     "start:dev": "npx nodemon",
-    "start:prod": "npm run build && node ../dist/backend/app/app.js",
-    "build": "rimraf ../dist/backend && tsc",
+    "start:prod": "node ./dist/backend/app/app.js",
+    "build": "rimraf ./dist/backend && tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "illium6",

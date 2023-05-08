@@ -57,3 +57,36 @@ def filter_detections(dets: Detections, mask: np.ndarray, inplace: bool = False)
                           confidence=dets.confidence[mask],
                           class_id=dets.class_id[mask],
                           tracker_id=dets.tracker_id[mask] if dets.tracker_id is not None else None)
+
+
+def detection_to_json(det: Detections) -> dict:
+    return {
+        "xyxy": det.xyxy.tolist(),
+        "class_id": det.class_id.tolist(),
+        "confidence": det.confidence.tolist()
+    }
+
+
+def update_statistics(dets: Detections, statistics: dict):
+    for det in dets:
+        if f'{int(det[3])}' in statistics.keys():
+            statistics[f'{int(det[3])}']['count'] += 1
+        else:
+            statistics[f'{int(det[3])}'] = {
+                "count": 1,
+                "class_id": det[2]
+            }
+    return
+
+
+def aggregate_statistics(statistics: dict, class_names: list):
+    final_stats = {}
+
+    for stat in statistics.values():
+        cls_name = class_names[stat['class_id']]
+        if cls_name in final_stats.keys():
+            final_stats[cls_name] += 1
+        else:
+            final_stats[cls_name] = 1
+
+    return final_stats

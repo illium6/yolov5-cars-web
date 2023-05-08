@@ -1,4 +1,6 @@
 import argparse
+import json
+import os
 
 from bytetracker import BYTETracker
 from roboflow import Roboflow
@@ -36,9 +38,19 @@ def main(args):
     # create instance of BoxAnnotator and LineCounterAnnotator
     box_annotator = BoxAnnotator(color=ColorPalette(project_colors), thickness=2, text_thickness=2, text_scale=0.6)
 
-    CLASS_ID = list(map(lambda x: CLASS_NAMES.index(x), args.filter))
+    CLASS_ID = list(map(lambda x: CLASS_NAMES.index(x), args.filter if args.filter else CLASS_NAMES))
 
-    DEST_VIDEO_PATH = args.output
+    DEST_VIDEO_PATH = os.path.join(args.output, 'output.mp4')
+
+    json_output = {
+        "predictions": [],
+        "statistics": {
+            "totalUniqueObjects": 0,
+            "distributionByClass": {}
+        }
+    }
+
+    statistics = {}
 
     # open target video file
     with VideoSink(DEST_VIDEO_PATH, video_info) as sink:
@@ -67,6 +79,10 @@ def main(args):
             mask = np.array([tracker_id is not None for tracker_id in detections.tracker_id], dtype=bool)
             filter_detections(detections, mask, inplace=True)
 
+            if args.output_type in ['json', 'all']:
+                update_statistics(detections, statistics)
+                json_output["predictions"].append(detection_to_json(detections))
+
             if args.output_type in ['video', 'all']:
                 # format custom labels
                 labels = [
@@ -77,6 +93,14 @@ def main(args):
                 # annotate and display frame
                 frame = box_annotator.annotate(scene=frame, detections=detections, labels=labels)
                 sink.write_frame(frame)
+
+    if args.output_type in ['json', 'all']:
+        stats = aggregate_statistics(statistics, CLASS_NAMES)
+        json_output['statistics']['distributionByClass'] = stats
+        json_output['statistics']['totalUniqueObjects'] = len(statistics.keys())
+
+        with open(os.path.join(args.output, 'predictions.json'), mode='w') as output_preds:
+            json.dump(json_output, output_preds)
 
 
 if __name__ == '__main__':
