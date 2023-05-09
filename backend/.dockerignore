@@ -1,9 +1,0 @@
-node_modules
-.env
-nodemon.json
-.prettier*
-.gitignore
-uploads
-.idea
-dist
-Dockerfile

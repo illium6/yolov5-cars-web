@@ -114,7 +114,7 @@ if __name__ == '__main__':
     parser.add_argument('--filter-classes', nargs='*', dest='filter', help='Classes to filter out from output')
     parser.add_argument('--output-type', required=True, dest='output_type', choices=['json', 'video', 'all'],
                         help='Output can be video or json with results or both')
-    parser.add_argument('--weights', required=True, dest='weights', default='./weights/best.pt', help='YOLOv5 weights')
+    parser.add_argument('--weights', dest='weights', default='./dist/backend/neural-network-backbone/weights/best.pt', help='YOLOv5 weights')
 
     args = parser.parse_args()
 

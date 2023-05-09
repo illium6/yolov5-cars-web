@@ -2,6 +2,7 @@ import express from 'express';
 import * as path from 'path';
 import { rootPath } from '../../utils/paths.js';
 import { spawn } from 'node:child_process';
+import * as os from 'os';
 
 export const videoUploadRouter = express.Router();
 
@@ -18,8 +19,15 @@ videoUploadRouter.post('/upload-user-video', async (req, res) => {
 
 	await video.mv(videoInputPath);
 
-	const proc = spawn('python', [
-		path.join('..', 'neural-network-backbone', 'main.py'),
+	const platform = os.platform();
+	const command = platform === 'win32' ? 'python' : 'python3';
+	const mainPyPath =
+		platform === 'win32'
+			? path.join('..', 'neural-network-backbone', 'main.py')
+			: path.join('dist', 'backend', 'neural-network-backbone', 'main.py');
+
+	const proc = spawn(command, [
+		mainPyPath,
 		'--input',
 		videoInputPath,
 		'--output',
@@ -28,9 +36,6 @@ videoUploadRouter.post('/upload-user-video', async (req, res) => {
 		req.body.outputType,
 		'--filter-classes',
 		req.body.classes,
-		'--weights',
-		// TODO поменять
-		path.join('..', 'neural-network-backbone', 'weights', 'best.pt'),
 	]);
 
 	proc.stderr.on('data', (data) => {

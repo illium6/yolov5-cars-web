@@ -8,6 +8,10 @@ services:
       - SESSION_SECRET=YetAnotherProject
       - UUID_NAMESPACE=ca88cfb7-e771-4da8-817b-45b12a370c95
     container_name: app-backend
+    expose:
+      - "3000"
+    ports:
+      - "8080:3000"
     deploy:
       resources:
         reservations:

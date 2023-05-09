@@ -1,0 +1,14 @@
+neural-network-backbone/output
+neural-network-backbone/src
+neural-network-backbone/venv
+neural-network-backbone/weights
+neural-network-backbone/*.mkv
+**/.gitignore
+backend/nodemon.json
+backend/node_modules
+backend/.env
+backend/.prettier*
+backend/uploads
+backend/.idea
+backend/dist
+backend/Dockerfile
