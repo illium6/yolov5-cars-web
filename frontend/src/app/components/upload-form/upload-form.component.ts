@@ -1,9 +1,11 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { UploadForm } from '../../models/upload-form';
 import { DEMO_VIDEOS, DISPLAYED_CLASS, OUTPUT_TYPE } from '../../models/form-fields-values';
-import { BehaviorSubject, first, Observable, Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, first, Observable, of, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { VideoUploadService } from '../../services/video-upload.service';
+import { Router } from '@angular/router';
+import { fromPromise } from 'rxjs/internal/observable/innerFrom';
 
 @Component({
 	selector: 'app-upload-form',
@@ -13,23 +15,44 @@ import { VideoUploadService } from '../../services/video-upload.service';
 	providers: [VideoUploadService],
 })
 export class UploadFormComponent implements OnInit, OnDestroy {
+	@HostListener('window:beforeunload', ['$event'])
+	private unloadHandler(event: Event): void {
+		const result =
+			this.isUploading &&
+			confirm(
+				'Вы уверены что хотите уйти со страницы? Ваши данные и процесс обработки НЕ будут сохранены',
+			);
+
+		event.returnValue = result || false;
+	}
+
 	public form: UploadForm = new UploadForm();
 	protected readonly DEMO_VIDEOS = DEMO_VIDEOS;
 
 	public checkboxIndeterminate$: Observable<boolean>;
 	public showUploadWindow$: Observable<boolean>;
+	public disableButton$: Observable<boolean>;
 
 	private _showUploadWindow$: BehaviorSubject<boolean>;
 	private _checkboxIndeterminate$: BehaviorSubject<boolean>;
+	private _disableButton$: BehaviorSubject<boolean>;
+	private isUploading: boolean = false;
+
+	public uploadWait$: Observable<boolean> = this.uploadService.loading$.pipe(
+		tap((value) => (this.isUploading = value)),
+	);
 
 	private destroy$: Subject<void> = new Subject<void>();
 
-	public constructor(private uploadService: VideoUploadService) {
+	public constructor(private uploadService: VideoUploadService, private router: Router) {
 		this._showUploadWindow$ = new BehaviorSubject<boolean>(false);
 		this.showUploadWindow$ = this._showUploadWindow$.asObservable();
 
 		this._checkboxIndeterminate$ = new BehaviorSubject<boolean>(false);
 		this.checkboxIndeterminate$ = this._checkboxIndeterminate$.asObservable();
+
+		this._disableButton$ = new BehaviorSubject(false);
+		this.disableButton$ = this._disableButton$.asObservable();
 	}
 
 	public ngOnInit() {
@@ -77,10 +100,24 @@ export class UploadFormComponent implements OnInit, OnDestroy {
 	}
 
 	public sendData(): void {
+		this._disableButton$.next(true);
 		const isValid = this.form.validateForm();
 
 		if (isValid) {
-			this.uploadService.uploadUserInput(this.form).pipe(first()).subscribe();
+			this.uploadService
+				.uploadUserInput(this.form)
+				.pipe(
+					tap(() => this._disableButton$.next(false)),
+					switchMap((uploadResult) => {
+						if (uploadResult.success) {
+							return fromPromise(this.router.navigate(['results']));
+						}
+
+						return of(null);
+					}),
+					first(),
+				)
+				.subscribe();
 		}
 	}
 

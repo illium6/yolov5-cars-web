@@ -4,11 +4,13 @@ export const DEMO_VIDEOS: IDemoVideoValue[] = [
 	{ label: 'Ул. Кирова - Ул. Братьев Кашириных', videoPath: '' },
 	{ label: 'Ул. Чичерина - Ул. 250-летия Челябинска', videoPath: '' },
 	{ label: 'Ул. Худякова - Ул. Энтузиастов', videoPath: 'hudyakova.webm' },
+	{ label: 'Ул. Молодогвардейцев - Просп. Победы', videoPath: '' },
+	{ label: 'Ост. "Поликлиника"', videoPath: '' },
 	{ label: 'Загрузите свое...', videoPath: 'downloaded' },
 ];
 
 export const OUTPUT_TYPE: IOutputType[] = [
-	{ label: 'Только видео (Форматы...)', type: 'video' },
+	{ label: 'Только видео (.mp4)', type: 'video' },
 	{ label: 'Json c результатами распознавания', type: 'json' },
 	{ label: 'JSON + видео', type: 'all' },
 ];

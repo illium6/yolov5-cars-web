@@ -1,29 +1,30 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import {
-	BehaviorSubject,
-	catchError,
-	combineLatest,
-	finalize,
-	map,
-	Observable,
-	of,
-	switchMap,
-} from 'rxjs';
-import { environment } from '../../environments/environment';
+import { BehaviorSubject, catchError, finalize, map, Observable, of, switchMap } from 'rxjs';
 import { UploadForm } from '../models/upload-form';
+import { IServerResponse } from '../interfaces/server-response';
+import { AssetsConnector } from '../api/connectors/assets-connector';
+import { VideoConnector } from '../api/connectors/video-connector';
+
+interface IUpload {
+	userVideo: File;
+	outputType: string;
+	classes: string;
+}
 
 @Injectable()
 export class VideoUploadService {
 	public loading$: Observable<boolean>;
 	private _loading$: BehaviorSubject<boolean>;
 
-	public constructor(private http: HttpClient) {
+	public constructor(
+		private assetConnector: AssetsConnector,
+		private videoConnector: VideoConnector,
+	) {
 		this._loading$ = new BehaviorSubject<boolean>(false);
 		this.loading$ = this._loading$.asObservable();
 	}
 
-	public uploadUserInput(form: UploadForm): Observable<any> {
+	public uploadUserInput(form: UploadForm): Observable<IServerResponse> {
 		const video$: Observable<File> =
 			form.demoVideo.value === 'downloaded' && form.downloadVideo.value
 				? of(form.downloadVideo.value)
@@ -31,7 +32,11 @@ export class VideoUploadService {
 
 		return video$.pipe(
 			switchMap((video: File) =>
-				combineLatest([this.uploadFile(video), this.uploadOutputConfig(form)]),
+				this.upload({
+					userVideo: video,
+					outputType: form.outputType.value,
+					classes: form.displayedClasses.value.join(' '),
+				}),
 			),
 			catchError((e: any) => {
 				console.error(e);
@@ -41,29 +46,22 @@ export class VideoUploadService {
 		);
 	}
 
-	public uploadOutputConfig(form: UploadForm): Observable<any> {
-		const data = {
-			outputType: form.outputType.value,
-			classes: form.displayedClasses.value,
-		};
-
-		return this.http.post(`${environment.apiUrl}/output-configuration`, data);
-	}
-
-	public uploadFile(file: File): Observable<any> {
+	public upload(userData: IUpload): Observable<IServerResponse> {
 		this._loading$.next(true);
 
 		const formData = new FormData();
-		formData.append('user_video', file);
+		formData.append('user_video', userData.userVideo);
+		formData.append('outputType', userData.outputType);
+		formData.append('classes', userData.classes);
 
-		return this.http
-			.post(`${environment.apiUrl}/upload-user-video`, formData)
+		return this.videoConnector
+			.processUserVideo(formData)
 			.pipe(finalize(() => this._loading$.next(false)));
 	}
 
 	public getVideoFromAssets(fileName: string): Observable<File> {
-		return this.http
-			.get(`/assets/${fileName}`, { responseType: 'blob' })
+		return this.assetConnector
+			.getAsset(fileName)
 			.pipe(map((blob: Blob) => new File([blob], fileName)));
 	}
 }

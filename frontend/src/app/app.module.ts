@@ -18,9 +18,10 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
+import { ResultsComponent } from './components/results/results.component';
 
 @NgModule({
-	declarations: [AppComponent, FileUploadComponent, PreloaderComponent, UploadFormComponent],
+	declarations: [AppComponent, FileUploadComponent, PreloaderComponent, UploadFormComponent, ResultsComponent],
 	imports: [
 		BrowserModule,
 		AppRoutingModule,

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
 	selector: 'app-preloader',
@@ -6,7 +6,4 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 	styleUrls: ['./preloader.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PreloaderComponent {
-	@Input()
-	public loadingText: string = 'Подождите...';
-}
+export class PreloaderComponent {}

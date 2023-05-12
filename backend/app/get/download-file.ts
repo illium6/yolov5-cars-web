@@ -5,28 +5,44 @@ import { rootPath } from '../../utils/paths.js';
 
 export const videoDownloadRouter = express.Router();
 
-videoDownloadRouter.get('/result-video', async (req, res) => {
-	const uploadDir: string = path.join(rootPath, 'uploads', 'output', req.session.id);
+videoDownloadRouter.get('/get-output-video', (req, res) => {
+	const videoPath = path.join(rootPath, 'uploads', 'output', req.session.id, 'output.mp4');
 
-	fs.access(uploadDir, (err) => {
-		if (err) {
-			console.error(err);
-
-			res.status(500).json({ success: false, message: 'No file to download' });
+	fs.stat(videoPath, (err, stat) => {
+		if (err?.code === 'ENOENT') {
+			res.status(400).json({ success: false, message: 'No file to download' });
+			return;
 		}
 
-		fs.readdir(uploadDir, (err, files) => {
-			if (err) {
-				console.error(err);
+		if (err == null) {
+			res.download(videoPath);
+			return;
+		}
 
-				res.status(500).json({ success: false, message: 'No file to download' });
-			}
+		res.status(500).json({ success: false, message: 'Unknown error' });
+	});
+});
 
-			files.forEach((file: string) => {
-				if (file.startsWith('output.video.')) {
-					res.download(path.join(uploadDir, file));
-				}
-			});
-		});
+videoDownloadRouter.get('/get-predictions', (req, res) => {
+	const predictionsPath = path.join(
+		rootPath,
+		'uploads',
+		'output',
+		req.session.id,
+		'predictions.json',
+	);
+
+	fs.stat(predictionsPath, (err, stat) => {
+		if (err?.code === 'ENOENT') {
+			res.status(400).json({ success: false, message: 'No file to download' });
+			return;
+		}
+
+		if (err == null) {
+			res.download(predictionsPath);
+			return;
+		}
+
+		res.status(500).json({ success: false, message: 'Unknown error' });
 	});
 });

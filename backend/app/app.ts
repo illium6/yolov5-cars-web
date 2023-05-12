@@ -7,7 +7,7 @@ import cookieParser from 'cookie-parser';
 import fileUpload from 'express-fileupload';
 import cors from 'cors';
 import * as path from 'path';
-import { videoUploadRouter } from './post/video-upload.js';
+import { videoUploadRouter } from './post/video-process.js';
 import { rootPath } from '../utils/paths.js';
 import { createDeletionJob } from '../utils/cron-tasks.js';
 import { videoDownloadRouter } from './get/download-file.js';
@@ -35,7 +35,12 @@ app.use(
 	}),
 );
 
-app.use(cors());
+app.use(
+	cors({
+		credentials: true,
+		origin: true,
+	}),
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -48,7 +53,6 @@ app.use(express.static(path.join(rootPath, 'uploads')));
 
 app.use('/api/v1', videoUploadRouter);
 app.use('/api/v1', videoDownloadRouter);
-// app.use('/api/v1', startDetectionRouter);
 app.use((req, res) => {
 	if (!res.headersSent) {
 		setTimeout(() => {

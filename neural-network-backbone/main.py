@@ -39,7 +39,7 @@ def main(args):
     # create instance of BoxAnnotator and LineCounterAnnotator
     box_annotator = BoxAnnotator(color=ColorPalette(project_colors), thickness=2, text_thickness=2, text_scale=0.6)
 
-    CLASS_ID = list(map(lambda x: CLASS_NAMES.index(x), args.filter if args.filter else CLASS_NAMES))
+    CLASS_ID = list(map(lambda x: CLASS_NAMES.index(x), args.filter.split() if args.filter else CLASS_NAMES))
 
     DEST_VIDEO_PATH = os.path.join(args.output, 'output.mp4')
 
@@ -111,7 +111,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='detect objects on video')
     parser.add_argument('--input', required=True, dest='input', type=str, help='Video to recognize')
     parser.add_argument('--output', required=True, dest='output', type=str, help='Path to write output video')
-    parser.add_argument('--filter-classes', nargs='*', dest='filter', help='Classes to filter out from output')
+    parser.add_argument('--filter-classes', dest='filter', type=str, help='Classes to filter out from output')
     parser.add_argument('--output-type', required=True, dest='output_type', choices=['json', 'video', 'all'],
                         help='Output can be video or json with results or both')
     parser.add_argument('--weights', dest='weights', default='./dist/backend/neural-network-backbone/weights/best.pt', help='YOLOv5 weights')

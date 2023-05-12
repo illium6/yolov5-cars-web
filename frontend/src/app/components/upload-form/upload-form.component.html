@@ -1,4 +1,4 @@
-<div class="upload-form-wrapper">
+<div class="upload-form-wrapper" *ngIf="!(uploadWait$ | async); else loader">
 	<form>
 		<mat-grid-list cols="2" rowHeight="2:1">
 			<mat-grid-tile>
@@ -79,5 +79,18 @@
 			</mat-grid-tile>
 		</mat-grid-list>
 	</form>
-	<button mat-raised-button color="primary" (click)="sendData()">Отправить</button>
+	<button
+		mat-raised-button
+		color="primary"
+		[disabled]="(disableButton$ | async) === true"
+		(click)="sendData()"
+	>
+		Отправить
+	</button>
 </div>
+<ng-template #loader>
+	<app-preloader>
+		<span>Ваше видео обрабатывается, пожалуйста подождите...</span>
+		<span>Убедительная просьба, не покидайте страницу, иначе прогресс обработки прервется</span>
+	</app-preloader>
+</ng-template>
