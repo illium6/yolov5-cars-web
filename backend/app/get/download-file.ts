@@ -6,7 +6,7 @@ import { rootPath } from '../../utils/paths.js';
 export const videoDownloadRouter = express.Router();
 
 videoDownloadRouter.get('/get-output-video', (req, res) => {
-	const videoPath = path.join(rootPath, 'uploads', 'output', req.session.id, 'output.mp4');
+	const videoPath = path.join(rootPath, 'uploads', 'output', req.session.id, 'output.webm');
 
 	fs.stat(videoPath, (err, stat) => {
 		if (err?.code === 'ENOENT') {

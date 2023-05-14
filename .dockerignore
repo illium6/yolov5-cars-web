@@ -12,3 +12,6 @@ backend/uploads
 backend/.idea
 backend/dist
 backend/Dockerfile
+frontend/.angular
+frontend/node_modules
+frontend/src/**/*.spec.ts

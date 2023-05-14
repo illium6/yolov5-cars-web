@@ -14,7 +14,9 @@ interface IUpload {
 @Injectable()
 export class VideoUploadService {
 	public loading$: Observable<boolean>;
+	public error$: Observable<boolean>;
 	private _loading$: BehaviorSubject<boolean>;
+	private _error$: BehaviorSubject<boolean>;
 
 	public constructor(
 		private assetConnector: AssetsConnector,
@@ -22,6 +24,9 @@ export class VideoUploadService {
 	) {
 		this._loading$ = new BehaviorSubject<boolean>(false);
 		this.loading$ = this._loading$.asObservable();
+
+		this._error$ = new BehaviorSubject<boolean>(false);
+		this.error$ = this._error$.asObservable();
 	}
 
 	public uploadUserInput(form: UploadForm): Observable<IServerResponse> {
@@ -41,6 +46,8 @@ export class VideoUploadService {
 			catchError((e: any) => {
 				console.error(e);
 
+				this._error$.next(true);
+
 				return of({ success: false });
 			}),
 		);
@@ -48,6 +55,7 @@ export class VideoUploadService {
 
 	public upload(userData: IUpload): Observable<IServerResponse> {
 		this._loading$.next(true);
+		this._error$.next(false);
 
 		const formData = new FormData();
 		formData.append('user_video', userData.userVideo);

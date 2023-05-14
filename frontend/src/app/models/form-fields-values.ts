@@ -10,7 +10,7 @@ export const DEMO_VIDEOS: IDemoVideoValue[] = [
 ];
 
 export const OUTPUT_TYPE: IOutputType[] = [
-	{ label: 'Только видео (.mp4)', type: 'video' },
+	{ label: 'Только видео (.webm)', type: 'video' },
 	{ label: 'Json c результатами распознавания', type: 'json' },
 	{ label: 'JSON + видео', type: 'all' },
 ];

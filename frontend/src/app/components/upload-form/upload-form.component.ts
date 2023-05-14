@@ -41,6 +41,7 @@ export class UploadFormComponent implements OnInit, OnDestroy {
 	public uploadWait$: Observable<boolean> = this.uploadService.loading$.pipe(
 		tap((value) => (this.isUploading = value)),
 	);
+	public uploadError$: Observable<boolean> = this.uploadService.error$;
 
 	private destroy$: Subject<void> = new Subject<void>();
 

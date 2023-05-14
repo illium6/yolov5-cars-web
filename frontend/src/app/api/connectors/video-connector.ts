@@ -16,7 +16,10 @@ export class VideoConnector {
 		);
 	}
 
-	public downloadProcessedVideo(): Observable<any> {
-		return this.http.get(`${environment.apiUrl}/get-output-video`, { withCredentials: true });
+	public downloadProcessedVideo(): Observable<Blob> {
+		return this.http.get(`${environment.apiUrl}/get-output-video`, {
+			withCredentials: true,
+			responseType: 'blob',
+		});
 	}
 }

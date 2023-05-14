@@ -4,6 +4,9 @@ services:
     build:
       context: ./
       dockerfile: ./backend/Dockerfile
+    restart: always
+    sysctls:
+      - net.ipv4.conf.all.forwarding=1
     environment:
       - SESSION_SECRET=YetAnotherProject
       - UUID_NAMESPACE=ca88cfb7-e771-4da8-817b-45b12a370c95
@@ -11,10 +14,28 @@ services:
     expose:
       - "3000"
     ports:
-      - "8080:3000"
+      - "3232:3000"
     deploy:
       resources:
         reservations:
           devices:
             - driver: nvidia
               capabilities: [ gpu ]
+    networks:
+      app_net:
+
+  frontend:
+    build:
+      context: ./
+      dockerfile: ./frontend/Dockerfile
+    container_name: app-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      app_net:
+
+networks:
+  app_net:
+    driver: bridge

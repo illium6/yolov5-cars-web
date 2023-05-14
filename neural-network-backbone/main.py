@@ -3,6 +3,7 @@ import json
 import os
 import sys
 
+import cv2
 from bytetracker import BYTETracker
 from roboflow import Roboflow
 from supervision import BoxAnnotator
@@ -41,7 +42,7 @@ def main(args):
 
     CLASS_ID = list(map(lambda x: CLASS_NAMES.index(x), args.filter.split() if args.filter else CLASS_NAMES))
 
-    DEST_VIDEO_PATH = os.path.join(args.output, 'output.mp4')
+    DEST_VIDEO_PATH = os.path.join(args.output, 'output.webm')
 
     os.makedirs(args.output, exist_ok=True)
 
@@ -55,8 +56,11 @@ def main(args):
 
     statistics = {}
 
+    video_sink = VideoSink(DEST_VIDEO_PATH, video_info)
+    video_sink.__dict__['_VideoSink__fourcc'] = cv2.VideoWriter_fourcc(*"vp80")
+
     # open target video file
-    with VideoSink(DEST_VIDEO_PATH, video_info) as sink:
+    with video_sink as sink:
         count = 0
         # loop over video frames
         for frame in generator:

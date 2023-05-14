@@ -1,12 +1,49 @@
-<div class="results-wrapper">
-	<video>
-		<source />
-	</video>
+<ng-container *ngIf="resultsModel$ | async as model">
+	<app-preloader *ngIf="model.pending">Загружаем обработанные данные...</app-preloader>
 
-	<div class="buttons">
-		<button mat-raised-button color="primary">Скачать видео</button>
-		<button mat-raised-button color="primary" (click)="downloadPredictions()">
-			Скачать json
-		</button>
+	<div class="results-wrapper" *ngIf="model.ready">
+		<h1 class="results__header">Результаты распознавания</h1>
+
+		<div class="results">
+			<video controls preload="auto" width="720" height="405" *ngIf="model.item?.hasVideo">
+				<source [src]="videoSrc" type="video/webm" />
+			</video>
+
+			<ng-container *ngIf="model.item?.hasPredictions">
+				<code class="results__predictions" *ngIf="predictions$ | async as preds">
+					{{ preds }}
+				</code>
+			</ng-container>
+		</div>
+
+		<div class="buttons">
+			<button
+				mat-raised-button
+				color="primary"
+				(click)="downloadVideo()"
+				*ngIf="model.item?.hasVideo"
+			>
+				<mat-icon fontIcon="movie"></mat-icon>
+				Скачать видео
+			</button>
+			<button
+				mat-raised-button
+				color="primary"
+				(click)="downloadPredictions()"
+				*ngIf="model.item?.hasPredictions"
+			>
+				<mat-icon fontIcon="description"></mat-icon>
+				Скачать JSON
+			</button>
+		</div>
 	</div>
-</div>
+
+	<div class="results-error" *ngIf="model.error">
+		<mat-icon fontIcon="warning"></mat-icon>
+		<span>К сожалению, для вас не нашлось данных :(</span>
+		<span>
+			Попробуйте запустить процесс распознавания еще раз, и обязательно дождитесь его
+			окончания
+		</span>
+	</div>
+</ng-container>

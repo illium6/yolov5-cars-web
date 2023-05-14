@@ -19,9 +19,16 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
 import { ResultsComponent } from './components/results/results.component';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
-	declarations: [AppComponent, FileUploadComponent, PreloaderComponent, UploadFormComponent, ResultsComponent],
+	declarations: [
+		AppComponent,
+		FileUploadComponent,
+		PreloaderComponent,
+		UploadFormComponent,
+		ResultsComponent,
+	],
 	imports: [
 		BrowserModule,
 		AppRoutingModule,
@@ -37,6 +44,7 @@ import { ResultsComponent } from './components/results/results.component';
 		MatGridListModule,
 		MatDividerModule,
 		MatButtonModule,
+		CommonModule,
 	],
 	bootstrap: [AppComponent],
 })
