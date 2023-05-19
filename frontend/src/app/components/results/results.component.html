@@ -2,7 +2,12 @@
 	<app-preloader *ngIf="model.pending">Загружаем обработанные данные...</app-preloader>
 
 	<div class="results-wrapper" *ngIf="model.ready">
-		<h1 class="results__header">Результаты распознавания</h1>
+		<div class="results__header">
+			<h1>Результаты распознавания</h1>
+			<a class="results__header__main-link" routerLink="/" mat-button color="primary">
+				На главную
+			</a>
+		</div>
 
 		<div class="results">
 			<video controls preload="auto" width="720" height="405" *ngIf="model.item?.hasVideo">
@@ -45,5 +50,6 @@
 			Попробуйте запустить процесс распознавания еще раз, и обязательно дождитесь его
 			окончания
 		</span>
+		<a class="results-error__main-link" routerLink="/" mat-button color="primary">На главную</a>
 	</div>
 </ng-container>

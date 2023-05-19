@@ -1,3 +1,9 @@
+<div class="header">
+	<h1>Форма загрузки данных</h1>
+	<a class="header__results-link" mat-button color="primary" routerLink="/results">
+		<span>Посмотреть результаты</span>
+	</a>
+</div>
 <div class="upload-form-wrapper" *ngIf="!(uploadWait$ | async); else loader">
 	<form>
 		<mat-grid-list cols="2" rowHeight="2:1">

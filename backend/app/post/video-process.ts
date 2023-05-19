@@ -17,7 +17,7 @@ export const videoUploadRouter = express.Router();
 
 videoUploadRouter.post('/process-user-video', async (req, res) => {
 	if (!req.files) {
-		res.status(400).json({ success: false, message: 'No file to upload' });
+		res.status(400).json({ success: false, message: 'No file to process' });
 		return;
 	}
 

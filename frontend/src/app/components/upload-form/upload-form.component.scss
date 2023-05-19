@@ -2,8 +2,19 @@
 	width: 100%;
 	height: 100%;
 	display: flex;
+	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+
+	.header {
+		display: flex;
+
+		& .header__results-link {
+			position: absolute;
+			right: 128px;
+			font-size: 20px;
+		}
+	}
 
 	mat-radio-group {
 		display: flex;

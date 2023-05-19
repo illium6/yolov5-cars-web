@@ -17,7 +17,17 @@
 
 		&__header {
 			margin-bottom: 3em;
-			font-size: 36px;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+
+			& h1 {
+				font-size: 36px;
+			}
+
+			&__main-link {
+				font-size: 20px;
+			}
 		}
 
 		&__predictions {
@@ -44,6 +54,10 @@
 
 		font-size: 24px;
 
+		& .results-error__main-link {
+			font-size: 24px !important;
+		}
+
 		& > * + * {
 			margin-top: 16px;
 		}
@@ -54,5 +68,9 @@
 			width: fit-content;
 			color: darkgoldenrod;
 		}
+	}
+
+	app-preloader {
+		font-size: 24px;
 	}
 }
