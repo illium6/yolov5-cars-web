@@ -1,104 +1,111 @@
-<div class="header">
-	<h1>Форма загрузки данных</h1>
-	<a class="header__results-link" mat-button color="primary" routerLink="/results">
-		<span>Посмотреть результаты</span>
-	</a>
-</div>
-<div class="upload-form-wrapper" *ngIf="!(uploadWait$ | async); else loader">
-	<form>
-		<mat-grid-list cols="2" rowHeight="2:1">
-			<mat-grid-tile>
-				<mat-form-field class="video-choice" appearance="fill">
-					<mat-label>Выберите демонстрационное видео или загрузите свое</mat-label>
-					<mat-select [formControl]="form.demoVideo">
-						<mat-option
-							*ngFor="let demoVideo of DEMO_VIDEOS"
-							[value]="demoVideo.videoPath"
-						>
-							{{ demoVideo.label }}
-						</mat-option>
-					</mat-select>
-					<mat-error *ngIf="form.demoVideo.hasError('required')">
-						Обязательное поле
-					</mat-error>
-				</mat-form-field>
-			</mat-grid-tile>
-			<mat-grid-tile>
-				<div class="output-type-choice">
-					<p>Выберите тип выходных данных</p>
-					<mat-divider></mat-divider>
-
-					<mat-radio-group [formControl]="form.outputType">
-						<mat-radio-button *ngFor="let type of OUTPUT_TYPE" [value]="type.type">
-							{{ type.label }}
-						</mat-radio-button>
-					</mat-radio-group>
-					<mat-error
-						*ngIf="form.outputType.touched && form.outputType.hasError('required')"
-					>
-						Обязательное поле
-					</mat-error>
-				</div>
-			</mat-grid-tile>
-			<mat-grid-tile>
-				<video *ngIf="!(showUploadWindow$ | async) && form.demoVideo.value" controls>
-					<source [src]="'assets/' + form.demoVideo.value" type="video/webm" />
-				</video>
-				<app-file-upload
-					*ngIf="showUploadWindow$ | async"
-					[form]="form.downloadVideo"
-				></app-file-upload>
-			</mat-grid-tile>
-			<mat-grid-tile>
-				<div class="checkbox-tile">
-					<p>Выберите классы, для которых применить распознавание</p>
-					<mat-divider></mat-divider>
-
-					<mat-checkbox
-						class="main-checkbox"
-						(change)="setClassesFullList($event)"
-						[indeterminate]="checkboxIndeterminate$ | async"
-						[checked]="form.displayedClasses.value.length === DISPLAYED_CLASS.length"
-					>
-						Выбрать все
-					</mat-checkbox>
-
-					<span class="classes-checkbox">
-						<mat-checkbox
-							*ngFor="let displayedClass of DISPLAYED_CLASS"
-							(change)="setValueToForm($event.checked, displayedClass.class)"
-							[checked]="form.displayedClasses.value.includes(displayedClass.class)"
-						>
-							{{ displayedClass.label }}
-						</mat-checkbox>
-					</span>
-
-					<mat-error
-						*ngIf="
-							form.displayedClasses.touched &&
-							form.displayedClasses.hasError('required')
-						"
-					>
-						Обязательное поле
-					</mat-error>
-				</div>
-			</mat-grid-tile>
-		</mat-grid-list>
-	</form>
-	<button
-		mat-raised-button
-		color="primary"
-		[disabled]="(disableButton$ | async) === true"
-		(click)="sendData()"
-	>
-		Отправить
-	</button>
-
-	<div class="process-error-message" *ngIf="uploadError$ | async">
-		<p>Во время обработки видео произошла непредвиденная ошибка</p>
-		<p>Попробуйте повторить попытку, или вернитесь позднее</p>
+<ng-container *ngIf="!(uploadWait$ | async); else loader">
+	<div class="header">
+		<h1>Форма загрузки данных</h1>
+		<a class="header__results-link" mat-button color="primary" routerLink="/results">
+			<span>Посмотреть результаты</span>
+		</a>
 	</div>
-</div>
+	<div class="upload-form-wrapper">
+		<form>
+			<mat-grid-list cols="2" rowHeight="2:1">
+				<mat-grid-tile>
+					<mat-form-field class="video-choice" appearance="fill">
+						<mat-label>Выберите демонстрационное видео или загрузите свое</mat-label>
+						<mat-select [formControl]="form.demoVideo">
+							<mat-option
+								*ngFor="let demoVideo of DEMO_VIDEOS"
+								[value]="demoVideo.videoPath"
+							>
+								{{ demoVideo.label }}
+							</mat-option>
+						</mat-select>
+						<mat-error *ngIf="form.demoVideo.hasError('required')">
+							Обязательное поле
+						</mat-error>
+					</mat-form-field>
+				</mat-grid-tile>
+				<mat-grid-tile>
+					<div class="output-type-choice">
+						<p>Выберите тип выходных данных</p>
+						<mat-divider></mat-divider>
+
+						<mat-radio-group [formControl]="form.outputType">
+							<mat-radio-button *ngFor="let type of OUTPUT_TYPE" [value]="type.type">
+								{{ type.label }}
+							</mat-radio-button>
+						</mat-radio-group>
+						<mat-error
+							*ngIf="form.outputType.touched && form.outputType.hasError('required')"
+						>
+							Обязательное поле
+						</mat-error>
+					</div>
+				</mat-grid-tile>
+				<mat-grid-tile>
+					<video *ngIf="!(showUploadWindow$ | async) && form.demoVideo.value" controls>
+						<source [src]="'assets/' + form.demoVideo.value" type="video/webm" />
+					</video>
+					<app-file-upload
+						*ngIf="showUploadWindow$ | async"
+						[form]="form.downloadVideo"
+					></app-file-upload>
+				</mat-grid-tile>
+				<mat-grid-tile>
+					<div class="checkbox-tile">
+						<p>Выберите классы, для которых применить распознавание</p>
+						<mat-divider></mat-divider>
+
+						<mat-checkbox
+							class="main-checkbox"
+							(change)="setClassesFullList($event)"
+							[indeterminate]="checkboxIndeterminate$ | async"
+							[checked]="
+								form.displayedClasses.value.length === DISPLAYED_CLASS.length
+							"
+						>
+							Выбрать все
+						</mat-checkbox>
+
+						<span class="classes-checkbox">
+							<mat-checkbox
+								*ngFor="let displayedClass of DISPLAYED_CLASS"
+								(change)="setValueToForm($event.checked, displayedClass.class)"
+								[checked]="
+									form.displayedClasses.value.includes(displayedClass.class)
+								"
+							>
+								{{ displayedClass.label }}
+							</mat-checkbox>
+						</span>
+
+						<mat-error
+							*ngIf="
+								form.displayedClasses.touched &&
+								form.displayedClasses.hasError('required')
+							"
+						>
+							Обязательное поле
+						</mat-error>
+					</div>
+				</mat-grid-tile>
+			</mat-grid-list>
+		</form>
+		<button
+			mat-raised-button
+			color="primary"
+			[disabled]="(disableButton$ | async) === true"
+			(click)="sendData()"
+		>
+			Отправить
+		</button>
+
+		<div class="process-error-message" *ngIf="uploadError$ | async">
+			<p>Во время обработки видео произошла непредвиденная ошибка</p>
+			<p>Попробуйте повторить попытку, или вернитесь позднее</p>
+		</div>
+	</div>
+</ng-container>
+
 <ng-template #loader>
 	<app-preloader>
 		<div class="loader-text">
