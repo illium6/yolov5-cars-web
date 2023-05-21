@@ -42,7 +42,11 @@
 					</div>
 				</mat-grid-tile>
 				<mat-grid-tile>
-					<video *ngIf="!(showUploadWindow$ | async) && form.demoVideo.value" controls>
+					<video
+						#demoVideoContainer
+						*ngIf="!(showUploadWindow$ | async) && form.demoVideo.value"
+						controls
+					>
 						<source [src]="'assets/' + form.demoVideo.value" type="video/webm" />
 					</video>
 					<app-file-upload

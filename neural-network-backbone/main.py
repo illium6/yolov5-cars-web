@@ -21,7 +21,7 @@ def main(args):
     rf = Roboflow(api_key="bdAvwORYXz3sYBNRPlIG")
     project = rf.workspace().project("full-dataset-4ekr5")
     # model = project.version(5).model
-    model = torch.hub.load('ultralytics/yolov5', 'custom', path=args.weights)
+    model = torch.hub.load('ultralytics/yolov5', 'custom', path=args.weights, trust_repo=True)
     model.conf = 0.4
     # classes = project.classes
     classes = model.names
@@ -118,7 +118,8 @@ if __name__ == '__main__':
     parser.add_argument('--filter-classes', dest='filter', type=str, help='Classes to filter out from output')
     parser.add_argument('--output-type', required=True, dest='output_type', choices=['json', 'video', 'all'],
                         help='Output can be video or json with results or both')
-    parser.add_argument('--weights', dest='weights', default='./dist/backend/neural-network-backbone/weights/best.pt', help='YOLOv5 weights')
+    parser.add_argument('--weights', dest='weights', default='./dist/backend/neural-network-backbone/weights/best.pt',
+                        help='YOLOv5 weights')
 
     args = parser.parse_args()
 

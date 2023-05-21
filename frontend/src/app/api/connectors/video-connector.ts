@@ -20,6 +20,9 @@ export class VideoConnector {
 		return this.http.get(`${environment.apiUrl}/get-output-video`, {
 			withCredentials: true,
 			responseType: 'blob',
+			headers: {
+				'Cache-Control': ['no-cache', 'no-store', 'must-revalidate'],
+			},
 		});
 	}
 }

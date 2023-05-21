@@ -132,5 +132,4 @@ src/
 
 **/*.mp4
 **/*.mkv
-weights/
 output/

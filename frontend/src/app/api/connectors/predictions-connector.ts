@@ -11,6 +11,9 @@ export class PredictionsConnector {
 		return this.http.get(`${environment.apiUrl}/get-predictions`, {
 			withCredentials: true,
 			responseType: 'blob',
+			headers: {
+				'Cache-Control': ['no-cache', 'no-store', 'must-revalidate'],
+			},
 		});
 	}
 }

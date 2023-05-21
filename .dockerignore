@@ -1,7 +1,6 @@
 neural-network-backbone/output
 neural-network-backbone/src
 neural-network-backbone/venv
-neural-network-backbone/weights
 neural-network-backbone/*.mkv
 **/.gitignore
 backend/nodemon.json

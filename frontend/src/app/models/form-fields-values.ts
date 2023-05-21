@@ -1,11 +1,11 @@
 import { IDemoVideoValue, IDisplayedClass, IOutputType } from '../interfaces/upload-form-types';
 
 export const DEMO_VIDEOS: IDemoVideoValue[] = [
-	{ label: 'Ул. Кирова - Ул. Братьев Кашириных', videoPath: '' },
-	{ label: 'Ул. Чичерина - Ул. 250-летия Челябинска', videoPath: '' },
+	{ label: 'Ул. Кирова - Ул. Братьев Кашириных', videoPath: 'kirova.webm' },
+	{ label: 'Ул. Чичерина - Ул. 250-летия Челябинска', videoPath: 'chicherina.webm' },
 	{ label: 'Ул. Худякова - Ул. Энтузиастов', videoPath: 'hudyakova.webm' },
-	{ label: 'Ул. Молодогвардейцев - Просп. Победы', videoPath: '' },
-	{ label: 'Ост. "Поликлиника"', videoPath: '' },
+	{ label: 'Ул. Молодогвардейцев - Просп. Победы', videoPath: 'pobedy.webm' },
+	{ label: 'Ост. "Поликлиника"', videoPath: 'poliklinika.webm' },
 	{ label: 'Загрузите свое...', videoPath: 'downloaded' },
 ];
 

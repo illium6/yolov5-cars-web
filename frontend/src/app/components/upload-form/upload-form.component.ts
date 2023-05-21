@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import {
+	ChangeDetectionStrategy,
+	Component,
+	ElementRef,
+	HostListener,
+	OnDestroy,
+	OnInit,
+	ViewChild,
+} from '@angular/core';
 import { UploadForm } from '../../models/upload-form';
 import { DEMO_VIDEOS, DISPLAYED_CLASS, OUTPUT_TYPE } from '../../models/form-fields-values';
 import { BehaviorSubject, first, Observable, of, Subject, switchMap, takeUntil, tap } from 'rxjs';
@@ -25,6 +33,9 @@ export class UploadFormComponent implements OnInit, OnDestroy {
 
 		event.returnValue = result || false;
 	}
+
+	@ViewChild('demoVideoContainer')
+	public videoContainer!: ElementRef;
 
 	public form: UploadForm = new UploadForm();
 	protected readonly DEMO_VIDEOS = DEMO_VIDEOS;
@@ -59,9 +70,13 @@ export class UploadFormComponent implements OnInit, OnDestroy {
 	public ngOnInit() {
 		this.form.demoVideo.valueChanges
 			.pipe(takeUntil(this.destroy$))
-			.subscribe((videoPath: string) =>
-				this._showUploadWindow$.next(videoPath === 'downloaded'),
-			);
+			.subscribe((videoPath: string) => {
+				if (videoPath !== 'downloaded') {
+					this.videoContainer?.nativeElement.load();
+				}
+
+				this._showUploadWindow$.next(videoPath === 'downloaded');
+			});
 	}
 
 	public ngOnDestroy() {
